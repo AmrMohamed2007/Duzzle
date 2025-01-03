@@ -1,0 +1,24 @@
+{
+  "name": "duzzle",
+  "version": "1.0.2",
+  "description": "Best package to manage your mongodb with case and easy",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mongoose",
+    "mongodb",
+    "db",
+    "dbmanager"
+  ],
+  "author": "amr",
+  "license": "ISC",
+  "dependencies": {
+    "events": "^3.3.0",
+    "mongoose": "^8.9.3"
+  },
+  "devDependencies": {
+    "@types/events": "^3.0.3"
+  }
+}
