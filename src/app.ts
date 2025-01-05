@@ -4,19 +4,20 @@ import mongoose, { Model } from "mongoose"
 import { DBError } from './utils/Error';
 import { ShapeAdd } from './interfaces/Shape';
 import { createSch } from './app/Schema/create';
-class App extends EventEmitter {
+import { Shape } from './shape';
+export class App extends EventEmitter {
     constructor(url: string) {
         super();
         this.url = url;
         this.connected = false;
         this.db = undefined;
-        this.Schemas = {}
+        this.Shapes = {}
     }
 
     public url: string;
     public connected: boolean;
     public db: mongoose.Mongoose | undefined;
-    public Schemas: Record<string, Model<any>>
+    public Shapes: Record<string, Shape>
 
     private RunNotes(): void {
         console.log('This Package Maked by https://www.youtube.com/@amrmohm');
@@ -27,10 +28,11 @@ class App extends EventEmitter {
         const Mongoose = await connect(this.url);
         if (!Mongoose || typeof Mongoose == "boolean") {
             return Promise.reject(new DBError("Mongoose is not connected"))
-        
+
         }
         this.db = Mongoose;
-        this.emit("dbConnected", {url: this.url,db: Mongoose})
+        this.connected = true;
+        this.emit("dbConnected", { url: this.url, db: Mongoose })
         return Promise.resolve(Mongoose)
     }
 
@@ -45,27 +47,26 @@ class App extends EventEmitter {
 
     public async createShape(options: ShapeAdd): Promise<Model<any>> {
 
-        if(!options || !options.SchemaData || !options.name) {
+        if (!options || !options.SchemaData || !options.name) {
             const ErrorData = new DBError("Error name or schema data not provided");
             throw new Error(ErrorData.message);
         }
 
-        if(typeof options.name !== "string" || options.SchemaData !instanceof Model) {
+        if (typeof options.name !== "string" || options.SchemaData! instanceof Model) {
             const ErrorData = new DBError("Error name or schema data true type does not provided");
             throw new Error(ErrorData.message);
         }
 
-        const Schema = await createSch({name: options.name, data: options.SchemaData})
-
-        this.Schemas[options.name] = Schema;
+        const Schema = await createSch({ name: options.name, data: options.SchemaData })
+        const newShape = new Shape(options.name, Schema)
+        this.Shapes[options.name] = newShape;
 
         return Schema;
     }
 
-    
+
 
 
 }
 
 
-export = App

@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
-import { DBError } from "src/utils/Error";
-import { DBD } from "src/utils/Success";
+import { DBError } from "../utils/Error";
+import { DBD } from "../utils/Success";
 export async function connect(url: string): Promise<mongoose.Mongoose> {
     try {
         const client = await mongoose.connect(url)
