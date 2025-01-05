@@ -3,6 +3,7 @@ export class DBError extends Error {
         super(message);
         this.name = 'DBError';
         console.error(`[DBError]: ${message}`);
+        return {message, name: this.name}
     
     }
 

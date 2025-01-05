@@ -1,15 +1,14 @@
 import mongoose from "mongoose"
 import { DBError } from "src/utils/Error";
 import { DBD } from "src/utils/Success";
-export async function connect(url: string): Promise<undefined> {
+export async function connect(url: string): Promise<mongoose.Mongoose> {
     try {
-
-
-        await mongoose.connect(url)
+        const client = await mongoose.connect(url)
         new DBD(undefined, "Connected to DB");
-
+        return client;
     } catch (error: any) {
-        new DBError(`${error.message}`)
+        const ErrorData = new DBError(error.message);
+        throw new Error(ErrorData.message);
 
     }
 
