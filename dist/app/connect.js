@@ -15,11 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connect = connect;
 const mongoose_1 = __importDefault(require("mongoose"));
 const Error_1 = require("../utils/Error");
+const Success_1 = require("../utils/Success");
 function connect(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const client = yield mongoose_1.default.connect(url);
-            // new DBD(undefined, "Connected to DB"); .then in user front
+            new Success_1.DBD(undefined, "Connected to DB");
             return client;
         }
         catch (error) {

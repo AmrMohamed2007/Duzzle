@@ -7,17 +7,25 @@ exports.Server = void 0;
 const express_1 = __importDefault(require("express"));
 const express_rate_limit_1 = require("express-rate-limit");
 const helmet_1 = __importDefault(require("helmet"));
+const index_1 = require("./index");
 class Server {
     constructor(port) {
         this.env = {
             PORT: port,
             APP: (0, express_1.default)()
         };
+        this.connection = undefined;
         this.limiter = (0, express_rate_limit_1.rateLimit)({
             windowMs: 15 * 60 * 1000,
             limit: 100,
             standardHeaders: 'draft-8',
             legacyHeaders: false,
+        });
+    }
+    dbconnect(URL) {
+        return new index_1.App(URL).connect().then((app) => {
+            this.connection = app;
+            return app;
         });
     }
     start(options) {

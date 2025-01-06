@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction, RequestHandler, Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import Helmet from "helmet";
+import { App } from "./index"
 
 type RouteHandler = {
     run: (req: Request, res: Response) => void;
@@ -8,6 +9,7 @@ type RouteHandler = {
 
 export class Server {
     public env: any;
+    public connection: App | undefined | any;
     private limiter;
 
     constructor(port: number) {
@@ -15,11 +17,22 @@ export class Server {
             PORT: port,
             APP: express()
         }
+
+        this.connection = undefined;
+
         this.limiter = rateLimit({
             windowMs: 15 * 60 * 1000,
             limit: 100,
             standardHeaders: 'draft-8',
             legacyHeaders: false,
+        })
+    }
+
+
+    dbconnect(URL: string): Promise<any> {
+        return new App(URL).connect().then((app) => {
+            this.connection = app
+            return app
         })
     }
 

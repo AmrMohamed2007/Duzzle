@@ -30,7 +30,6 @@ export class App extends EventEmitter {
         const Mongoose = await connect(this.url);
         if (!Mongoose || typeof Mongoose == "boolean") {
             return Promise.reject(new DBError("Mongoose is not connected"))
-
         }
         this.db = Mongoose;
         this.connected = true;

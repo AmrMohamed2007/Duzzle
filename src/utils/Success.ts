@@ -4,4 +4,3 @@ export class DBD {
         return {message, name}
     }
 }
-
