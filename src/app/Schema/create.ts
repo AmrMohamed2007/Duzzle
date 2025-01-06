@@ -9,7 +9,7 @@ export async function createSch({ name, data }: { name: string, data: Record<str
         }
         const schema = new Schema(data);
         const modelSchema = mongoose.model(name, schema)
-        new DBD(undefined, `Schema Created With Name : ${name}`);
+        new DBD(undefined, `Schema Created With Name : ${name}`); // you can add it in log file
         return modelSchema
     } catch (error: any) {
         const ErrorData = new DBError(error.message);

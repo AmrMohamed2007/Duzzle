@@ -5,6 +5,8 @@ import { DBError } from './utils/Error';
 import { ShapeAdd } from './interfaces/Shape';
 import { createSch } from './app/Schema/create';
 import { Shape } from './shape';
+import { color } from './utils/Colors';
+
 export class App extends EventEmitter {
     constructor(url: string) {
         super();
@@ -20,7 +22,7 @@ export class App extends EventEmitter {
     public Shapes: Record<string, Shape>
 
     private RunNotes(): void {
-        console.log('This Package Maked by https://www.youtube.com/@amrmohm');
+        console.log(color("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306")); 
     }
 
     public async connect(): Promise<void | mongoose.Mongoose> {

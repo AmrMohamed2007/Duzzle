@@ -4,7 +4,8 @@
   "description": "Best package to manage your mongodb with case and easy",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsc"
   },
   "keywords": [
     "mongoose",
@@ -18,9 +19,14 @@
   "license": "MIT",
   "dependencies": {
     "events": "^3.3.0",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
     "mongoose": "^8.9.3"
   },
   "devDependencies": {
-    "@types/events": "^3.0.3"
+    "@types/events": "^3.0.3",
+    "@types/express": "^5.0.0",
+    "@types/methods": "^1.1.4"
   }
 }
