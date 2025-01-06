@@ -10,8 +10,7 @@ app.start({
     .then(() => console.log('Server started on port 3000'))
     .catch((r) => console.error)
 
-let db = app.dbconnect("mongodb+srv://Black:6885012249@black.p7dqd.mongodb.net/")
-
+let db = app.connectDb("mongodb+srv://Black:6885012249@black.p7dqd.mongodb.net/")
     
 const apiRouter = app.router();
 apiRouter.get("/hi", (req, res) => res.send("hi"))

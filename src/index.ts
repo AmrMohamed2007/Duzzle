@@ -1,4 +1,4 @@
-import {App} from "./app";
+import { App } from "./app";
 import { Shape } from "./shape";
 import { Server } from "./server"
 

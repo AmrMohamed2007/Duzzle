@@ -22,11 +22,15 @@ class Server {
             legacyHeaders: false,
         });
     }
-    dbconnect(URL) {
-        return new index_1.App(URL).connect().then((app) => {
-            this.connection = app;
-            return app;
+    connectDb(URL) {
+        const app = new index_1.App(URL);
+        app.connect().then(() => {
+            console.log('Connected to the database!');
+        }).catch(err => {
+            console.error('Failed to connect to the database:', err);
         });
+        this.connection = app;
+        return app;
     }
     start(options) {
         return new Promise((res, rej) => {

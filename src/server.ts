@@ -29,11 +29,16 @@ export class Server {
     }
 
 
-    dbconnect(URL: string): Promise<any> {
-        return new App(URL).connect().then((app) => {
-            this.connection = app
-            return app
-        })
+    connectDb(URL: string) {
+        const app = new App(URL)
+        app.connect().then(() => {
+            console.log('Connected to the database!');
+        }).catch(err => {
+            console.error('Failed to connect to the database:', err);
+        });
+        
+        this.connection = app
+        return app
     }
 
     start(options?: { enableRateLimit?: boolean, enableHelmet?: boolean }): Promise<void> {
