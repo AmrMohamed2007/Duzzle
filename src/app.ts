@@ -6,20 +6,23 @@ import { ShapeAdd } from './interfaces/Shape';
 import { createSch } from './app/Schema/create';
 import { Shape } from './shape';
 import { color } from './utils/Colors';
+import { DatabaseOptions } from './interfaces/Database';
 
 export class App extends EventEmitter {
-    constructor(url: string) {
+    constructor(url: string, options?: DatabaseOptions) {
         super();
         this.url = url;
         this.connected = false;
         this.db = undefined;
         this.Shapes = {}
+        this.options = options ? options : undefined
     }
 
     public url: string;
     public connected: boolean;
     public db: mongoose.Mongoose | undefined;
     public Shapes: Record<string, Shape>
+    public options?: DatabaseOptions
 
     private RunNotes(): void {
         console.log(color("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306")); 

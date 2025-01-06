@@ -2,9 +2,11 @@ import mongoose, { Document, Model, UpdateWriteOpResult } from "mongoose";
 import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "./interfaces/ShapeFunctions";
 import { DBError } from "./utils/Error";
 import { createNestedObject } from "./utils/NestedObject";
+import { EventEmitter } from "stream";
 
-class Shape {
+class Shape extends EventEmitter {
     constructor(name: string, ModelData: Model<any>) {
+        super()
         this.name = name
         this.model = ModelData
 
@@ -78,10 +80,14 @@ class Shape {
                         options?.arrayMethod ? options.arrayMethod : undefined
                     );
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
-                    return await this.model.findOneAndUpdate(filter, QueryData, UpdateOption);
+                    const foau = await this.model.findOneAndUpdate(filter, QueryData, UpdateOption);
+                    this.emit("dbEdited", {data:foau, type: TOSU.one});
+                    return foau;
                 } else if (typeof update === "object" && !Array.isArray(update)) {
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
-                    return await this.model.findOneAndUpdate(filter, update, UpdateOption);
+                    const foau = await this.model.findOneAndUpdate(filter, update, UpdateOption);
+                    this.emit("dbEdited", {data:foau, type: TOSU.one});
+                    return foau;
                 } else {
                     const ErrorData = new DBError('Invalid param was provided "update"');
                     throw new Error(ErrorData.message);
@@ -96,9 +102,11 @@ class Shape {
                         options?.arrayMethod ? options.arrayMethod : undefined
                     );
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
+                    this.emit("dbEdited", {type: TOSU.all});
                     return await this.model.updateMany(filter, QueryData, UpdateOption); // updateMany result is handled
                 } else if (typeof update === "object" && !Array.isArray(update)) {
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
+                    this.emit("dbEdited", {type: TOSU.all});
                     return await this.model.updateMany(filter, update, UpdateOption); // updateMany result is handled
                 } else {
                     const ErrorData = new DBError('Invalid param was provided "update"');
