@@ -1,4 +1,9 @@
+
 export interface DatabaseOptions {
-    autoHash?: boolean
+    autoHash?: {
+        enable: boolean,
+        words: string[]
+    }
     logFile?: boolean
 }
+

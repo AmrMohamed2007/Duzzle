@@ -18,6 +18,7 @@
   "author": "amr",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "events": "^3.3.0",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
