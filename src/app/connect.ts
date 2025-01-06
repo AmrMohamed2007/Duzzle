@@ -13,4 +13,3 @@ export async function connect(url: string): Promise<mongoose.Mongoose> {
     }
 
 }
-
