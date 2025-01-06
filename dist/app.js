@@ -18,12 +18,13 @@ const create_1 = require("./app/Schema/create");
 const shape_1 = require("./shape");
 const Colors_1 = require("./utils/Colors");
 class App extends events_1.EventEmitter {
-    constructor(url) {
+    constructor(url, options) {
         super();
         this.url = url;
         this.connected = false;
         this.db = undefined;
         this.Shapes = {};
+        this.options = options ? options : undefined;
     }
     RunNotes() {
         console.log((0, Colors_1.color)("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306"));

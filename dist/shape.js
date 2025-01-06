@@ -13,8 +13,10 @@ exports.Shape = void 0;
 const ShapeFunctions_1 = require("./interfaces/ShapeFunctions");
 const Error_1 = require("./utils/Error");
 const NestedObject_1 = require("./utils/NestedObject");
-class Shape {
+const stream_1 = require("stream");
+class Shape extends stream_1.EventEmitter {
     constructor(name, ModelData) {
+        super();
         this.name = name;
         this.model = ModelData;
     }
@@ -59,11 +61,15 @@ class Shape {
                         const arrOfD = Ukey.split(".");
                         const QueryData = (0, NestedObject_1.createNestedObject)(arrOfD, update.value, (options === null || options === void 0 ? void 0 : options.arrayMethod) ? options.arrayMethod : undefined);
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false };
-                        return yield this.model.findOneAndUpdate(filter, QueryData, UpdateOption);
+                        const foau = yield this.model.findOneAndUpdate(filter, QueryData, UpdateOption);
+                        this.emit("dbEdited", { data: foau, type: ShapeFunctions_1.TOSU.one });
+                        return foau;
                     }
                     else if (typeof update === "object" && !Array.isArray(update)) {
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false };
-                        return yield this.model.findOneAndUpdate(filter, update, UpdateOption);
+                        const foau = yield this.model.findOneAndUpdate(filter, update, UpdateOption);
+                        this.emit("dbEdited", { data: foau, type: ShapeFunctions_1.TOSU.one });
+                        return foau;
                     }
                     else {
                         const ErrorData = new Error_1.DBError('Invalid param was provided "update"');
@@ -76,10 +82,12 @@ class Shape {
                         const arrOfD = Ukey.split(".");
                         const QueryData = (0, NestedObject_1.createNestedObject)(arrOfD, update.value, (options === null || options === void 0 ? void 0 : options.arrayMethod) ? options.arrayMethod : undefined);
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false };
+                        this.emit("dbEdited", { type: ShapeFunctions_1.TOSU.all });
                         return yield this.model.updateMany(filter, QueryData, UpdateOption); // updateMany result is handled
                     }
                     else if (typeof update === "object" && !Array.isArray(update)) {
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false };
+                        this.emit("dbEdited", { type: ShapeFunctions_1.TOSU.all });
                         return yield this.model.updateMany(filter, update, UpdateOption); // updateMany result is handled
                     }
                     else {
