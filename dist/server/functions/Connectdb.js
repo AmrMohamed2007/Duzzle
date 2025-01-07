@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectDb = void 0;
 const index_1 = require("../../index");
-const connectDb = (URL) => {
+const connectDb = (URL, extentions) => {
     try {
         if (!URL)
             throw new Error("DB URL is not provided");
-        const ApplicationDB = new index_1.App(URL);
+        const ApplicationDB = new index_1.App(URL, extentions);
         ApplicationDB.connect();
         return ApplicationDB;
     }

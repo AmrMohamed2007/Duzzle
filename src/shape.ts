@@ -81,6 +81,8 @@ class Shape extends EventEmitter {
                 if ("key" in update && "value" in update) {
                     const Ukey = update.key as string;
                     const arrOfD = Ukey.split(".");
+                    console.log(this.extentions?.autoHash?.enable, await autoHash(this?.extentions, [{[update.key as string]: update.value}]));
+                    
                     const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{[update.key as string]: update.value}]) : [{[update.key as string]: update.value}]
                     const QueryData = await createNestedObject(
                         arrOfD,

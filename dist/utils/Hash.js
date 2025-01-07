@@ -17,17 +17,23 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const Error_1 = require("./Error");
 const autoHash = (DatabaseOptions, data) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c;
+    if (!DatabaseOptions)
+        return;
     if (((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.enable) && ((_b = DatabaseOptions.autoHash) === null || _b === void 0 ? void 0 : _b.words) && ((_c = DatabaseOptions.autoHash) === null || _c === void 0 ? void 0 : _c.words.length) > 0) {
         if (!Array.isArray(data)) {
             const ErrorData = new Error_1.DBError("data is not array");
             throw new Error(ErrorData.message);
         }
         else {
+            console.log(data, 'dataaa', DatabaseOptions, DatabaseOptions.autoHash.words);
             const hashedPassword = data.map((m) => __awaiter(void 0, void 0, void 0, function* () {
                 var _a;
+                console.log(m, "cluded");
                 if ((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.words.includes(m)) {
+                    console.log(m, "mincluded");
                     return yield bcrypt_1.default.hash(m, 10);
                 }
+                console.log(m, "cludedsss");
                 return m;
             }));
             return (yield Promise.all(hashedPassword)).filter(m => m);

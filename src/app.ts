@@ -61,6 +61,11 @@ export class App extends EventEmitter {
             throw new Error(ErrorData.message);
         }
 
+        if(!this.connected) {
+            const ErrorData = new DBError("db is not connected to make a shape");
+            throw new Error(ErrorData.message);
+        }
+
         const Schema = await createSch({ name: options.name, data: options.SchemaData }) as Model<any>
         const newShape: Shape = new Shape(options.name, Schema, this.extentions)
         this.Shapes[options.name] = newShape;

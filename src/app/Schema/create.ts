@@ -1,7 +1,6 @@
 import mongoose, { Model, Schema } from "mongoose"
 import { DBError } from "../../utils/Error";
 import { DBD } from "../../utils/Success";
-import { Shape } from "../../shape";
 export async function createSch({ name, data }: { name: string, data: Record<string, unknown> }): Promise<Model<any>> {
     try {
         if (typeof name !== "string") {

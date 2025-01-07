@@ -61,6 +61,10 @@ class App extends events_1.EventEmitter {
                 const ErrorData = new Error_1.DBError("Error name or schema data true type does not provided");
                 throw new Error(ErrorData.message);
             }
+            if (!this.connected) {
+                const ErrorData = new Error_1.DBError("db is not connected to make a shape");
+                throw new Error(ErrorData.message);
+            }
             const Schema = yield (0, create_1.createSch)({ name: options.name, data: options.SchemaData });
             const newShape = new shape_1.Shape(options.name, Schema, this.extentions);
             this.Shapes[options.name] = newShape;

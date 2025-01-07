@@ -22,8 +22,8 @@ class Server {
             legacyHeaders: false,
         });
     }
-    connectDb(URL) {
-        const app = (0, main_1.connectDb)(URL);
+    connectDb(URL, extentions) {
+        const app = (0, main_1.connectDb)(URL, extentions ? extentions : undefined);
         this.connection = app;
         return app;
     }

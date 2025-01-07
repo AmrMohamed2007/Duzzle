@@ -3,6 +3,7 @@ import { rateLimit } from "express-rate-limit";
 import Helmet from "helmet";
 import { App } from "./index"
 import { connectDb } from "./server/main";
+import { DatabaseOptions } from "./interfaces/Database";
 
 type RouteHandler = {
     run: (req: Request, res: Response) => void;
@@ -30,8 +31,8 @@ export class Server {
     }
 
 
-    connectDb(URL: string): App {
-        const app = connectDb(URL)
+    connectDb(URL: string, extentions?: DatabaseOptions): App {
+        const app = connectDb(URL, extentions ? extentions : undefined )
         this.connection = app
         return app
     }
