@@ -18,13 +18,13 @@ const create_1 = require("./app/Schema/create");
 const shape_1 = require("./shape");
 const Colors_1 = require("./utils/Colors");
 class App extends events_1.EventEmitter {
-    constructor(url, options) {
+    constructor(url, extentions) {
         super();
         this.url = url;
         this.connected = false;
         this.db = undefined;
         this.Shapes = {};
-        this.options = options ? options : undefined;
+        this.extentions = extentions ? extentions : undefined;
     }
     RunNotes() {
         console.log((0, Colors_1.color)("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306"));
@@ -62,7 +62,7 @@ class App extends events_1.EventEmitter {
                 throw new Error(ErrorData.message);
             }
             const Schema = yield (0, create_1.createSch)({ name: options.name, data: options.SchemaData });
-            const newShape = new shape_1.Shape(options.name, Schema);
+            const newShape = new shape_1.Shape(options.name, Schema, this.extentions);
             this.Shapes[options.name] = newShape;
             return Schema;
         });

@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction, RequestHandler, 
 import { rateLimit } from "express-rate-limit";
 import Helmet from "helmet";
 import { App } from "./index"
+import { connectDb } from "./server/main";
 
 type RouteHandler = {
     run: (req: Request, res: Response) => void;
@@ -30,13 +31,7 @@ export class Server {
 
 
     connectDb(URL: string) {
-        const app = new App(URL)
-        app.connect().then(() => {
-            console.log('Connected to the database!');
-        }).catch(err => {
-            console.error('Failed to connect to the database:', err);
-        });
-        
+        const app = connectDb(URL).connect();
         this.connection = app
         return app
     }

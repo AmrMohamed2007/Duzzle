@@ -7,7 +7,7 @@ exports.Server = void 0;
 const express_1 = __importDefault(require("express"));
 const express_rate_limit_1 = require("express-rate-limit");
 const helmet_1 = __importDefault(require("helmet"));
-const index_1 = require("./index");
+const main_1 = require("./server/main");
 class Server {
     constructor(port) {
         this.env = {
@@ -23,12 +23,7 @@ class Server {
         });
     }
     connectDb(URL) {
-        const app = new index_1.App(URL);
-        app.connect().then(() => {
-            console.log('Connected to the database!');
-        }).catch(err => {
-            console.error('Failed to connect to the database:', err);
-        });
+        const app = (0, main_1.connectDb)(URL).connect();
         this.connection = app;
         return app;
     }
