@@ -3,18 +3,21 @@ import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "./interfaces/Sh
 import { DBError } from "./utils/Error";
 import { createNestedObject } from "./utils/NestedObject";
 import { EventEmitter } from "stream";
+import { DatabaseOptions } from "./interfaces/Database";
+import { autoHash, compareHash } from "./utils/Hash";
 
 class Shape extends EventEmitter {
-    constructor(name: string, ModelData: Model<any>) {
+    constructor(name: string, ModelData: Model<any>, extentions?: DatabaseOptions) {
         super()
         this.name = name
         this.model = ModelData
+        this.extentions = extentions ? extentions : undefined
 
     }
 
     public name: string;
     public model: Model<any>
-
+    public extentions?: DatabaseOptions
     public async searchWI(options: Query): Promise<Document<unknown, any, unknown> | Document<unknown, any, unknown>[] | undefined | null> {
         const { type = TOSN.one, key, value } = options
         if (!type || !value) {
@@ -74,18 +77,22 @@ class Shape extends EventEmitter {
                 if ("key" in update && "value" in update) {
                     const Ukey = update.key as string;
                     const arrOfD = Ukey.split(".");
-                    const QueryData = createNestedObject(
+                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{[update.key as string]: update.value}]) : [{[update.key as string]: update.value}]
+                    const QueryData = await createNestedObject(
                         arrOfD,
-                        update.value,
+                        val[0][update.key as string],
                         options?.arrayMethod ? options.arrayMethod : undefined
                     );
+
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
+                    
                     const foau = await this.model.findOneAndUpdate(filter, QueryData, UpdateOption);
                     this.emit("dbEdited", {data:foau, type: TOSU.one});
                     return foau;
                 } else if (typeof update === "object" && !Array.isArray(update)) {
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
-                    const foau = await this.model.findOneAndUpdate(filter, update, UpdateOption);
+                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [update]) : [update]
+                    const foau = await this.model.findOneAndUpdate(filter, val[0], UpdateOption);
                     this.emit("dbEdited", {data:foau, type: TOSU.one});
                     return foau;
                 } else {
@@ -96,18 +103,20 @@ class Shape extends EventEmitter {
                 if ("key" in update && "value" in update) {
                     const Ukey = update.key as string;
                     const arrOfD = Ukey.split(".");
+                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{[update.key as string]: update.value}]) : [{[update.key as string]: update.value}]
                     const QueryData = createNestedObject(
                         arrOfD,
-                        update.value,
+                        val[0][update.key as string],
                         options?.arrayMethod ? options.arrayMethod : undefined
                     );
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
                     this.emit("dbEdited", {type: TOSU.all});
                     return await this.model.updateMany(filter, QueryData, UpdateOption); // updateMany result is handled
                 } else if (typeof update === "object" && !Array.isArray(update)) {
+                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [update]) : [update]
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false };
                     this.emit("dbEdited", {type: TOSU.all});
-                    return await this.model.updateMany(filter, update, UpdateOption); // updateMany result is handled
+                    return await this.model.updateMany(filter, val[0], UpdateOption); // updateMany result is handled
                 } else {
                     const ErrorData = new DBError('Invalid param was provided "update"');
                     throw new Error(ErrorData.message);
@@ -124,6 +133,10 @@ class Shape extends EventEmitter {
             throw new Error(ErrorData.message);
         }
 
+    }
+
+    public async compareHash(hashedPassword: string, password: string) {
+        return await compareHash(password, hashedPassword)
     }
 
 
