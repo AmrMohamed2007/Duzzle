@@ -9,20 +9,20 @@ import { color } from './utils/Colors';
 import { DatabaseOptions } from './interfaces/Database';
 
 export class App extends EventEmitter {
-    constructor(url: string, options?: DatabaseOptions) {
+    constructor(url: string, extentions?: DatabaseOptions) {
         super();
         this.url = url;
         this.connected = false;
         this.db = undefined;
         this.Shapes = {}
-        this.options = options ? options : undefined
+        this.extentions = extentions ? extentions : undefined
     }
 
     public url: string;
     public connected: boolean;
     public db: mongoose.Mongoose | undefined;
     public Shapes: Record<string, Shape>
-    public options?: DatabaseOptions
+    public extentions?: DatabaseOptions
 
     private RunNotes(): void {
         console.log(color("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306")); 
@@ -62,7 +62,7 @@ export class App extends EventEmitter {
         }
 
         const Schema = await createSch({ name: options.name, data: options.SchemaData })
-        const newShape = new Shape(options.name, Schema)
+        const newShape = new Shape(options.name, Schema, this.extentions)
         this.Shapes[options.name] = newShape;
 
         return Schema;

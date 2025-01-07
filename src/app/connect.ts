@@ -11,5 +11,4 @@ export async function connect(url: string): Promise<mongoose.Mongoose> {
         throw new Error(ErrorData.message);
 
     }
-
 }
