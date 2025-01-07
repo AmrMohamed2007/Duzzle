@@ -1,4 +1,4 @@
-import { Server } from "../dist/index";
+var { Server } = require("../dist/index");
 
 
 
@@ -11,8 +11,22 @@ app.start({
     .catch((r) => console.error)
 
 let db = app.connectDb("mongodb+srv://Black:6885012249@black.p7dqd.mongodb.net/")
+async function test() {
+    const UserShape = await db.createShape({
+        name: "users", SchemaData: {
+            name: String,
+            dash: String
+        }
+    })
     
-const apiRouter = app.router();
-apiRouter.get("/hi", (req, res) => res.send("hi"))
-apiRouter.get('/status', (req, res) => res.send("status"))
-app.useRouter('/api', apiRouter);
+    
+    
+    const s = await UserShape.searchWI({ type: 1, key: "samy.ah", value: "asd" })
+
+    console.log(s);
+    
+    
+    
+}
+
+test()

@@ -1,6 +1,7 @@
 import mongoose, { Model, Schema } from "mongoose"
 import { DBError } from "../../utils/Error";
 import { DBD } from "../../utils/Success";
+import { Shape } from "../../shape";
 export async function createSch({ name, data }: { name: string, data: Record<string, unknown> }): Promise<Model<any>> {
     try {
         if (typeof name !== "string") {
@@ -9,6 +10,7 @@ export async function createSch({ name, data }: { name: string, data: Record<str
         }
         const schema = new Schema(data);
         const modelSchema = mongoose.model(name, schema)
+      
         new DBD(undefined, `Schema Created With Name : ${name}`); // you can add it in log file
         return modelSchema
     } catch (error: any) {

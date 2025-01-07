@@ -49,7 +49,7 @@ export class App extends EventEmitter {
         return Promise.reject(new DBError("Mongoose is not connected"))
     }
 
-    public async createShape(options: ShapeAdd): Promise<Model<any>> {
+    public async createShape(options: ShapeAdd): Promise<Shape> {
 
         if (!options || !options.SchemaData || !options.name) {
             const ErrorData = new DBError("Error name or schema data not provided");
@@ -61,11 +61,11 @@ export class App extends EventEmitter {
             throw new Error(ErrorData.message);
         }
 
-        const Schema = await createSch({ name: options.name, data: options.SchemaData })
-        const newShape = new Shape(options.name, Schema, this.extentions)
+        const Schema = await createSch({ name: options.name, data: options.SchemaData }) as Model<any>
+        const newShape: Shape = new Shape(options.name, Schema, this.extentions)
         this.Shapes[options.name] = newShape;
 
-        return Schema;
+        return newShape as Shape;
     }
 
 

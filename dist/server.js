@@ -23,7 +23,7 @@ class Server {
         });
     }
     connectDb(URL) {
-        const app = (0, main_1.connectDb)(URL).connect();
+        const app = (0, main_1.connectDb)(URL);
         this.connection = app;
         return app;
     }

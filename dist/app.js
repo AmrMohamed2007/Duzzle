@@ -64,7 +64,7 @@ class App extends events_1.EventEmitter {
             const Schema = yield (0, create_1.createSch)({ name: options.name, data: options.SchemaData });
             const newShape = new shape_1.Shape(options.name, Schema, this.extentions);
             this.Shapes[options.name] = newShape;
-            return Schema;
+            return newShape;
         });
     }
 }

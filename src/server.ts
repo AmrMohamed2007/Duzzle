@@ -30,7 +30,7 @@ export class Server {
     }
 
 
-    connectDb(URL: string) {
+    connectDb(URL: string): App {
         const app = connectDb(URL)
         this.connection = app
         return app
