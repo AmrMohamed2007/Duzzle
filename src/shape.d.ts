@@ -1,14 +1,14 @@
-import mongoose, { Document, Model, UpdateWriteOpResult } from "mongoose";
+import { Document, Model, UpdateWriteOpResult } from "mongoose";
 
 import { EventEmitter } from 'events';
 import { Query, QueryU, QueryUpdate, TOSU, Uptions } from "./interfaces/ShapeFunctions";
 
 declare class Shape extends EventEmitter {
-    constructor (name: string, ModelData: Model<any>);
-      public name: string;
-      public model: Model<any>
-      public searchWI(options: Query): Promise<Document<unknown, any, unknown> | Document<unknown, any, unknown>[] | undefined | null>;
-      public editWI(
+    constructor(name: string, ModelData: Model<any>);
+    public name: string;
+    public model: Model<any>
+    public searchWI(options: Query): Promise<Document<unknown, any, unknown> | Document<unknown, any, unknown>[] | undefined | null>;
+    public editWI(
         filter: QueryU,
         update: QueryUpdate | Record<string, unknown>,
         type: TOSU,
@@ -22,7 +22,7 @@ declare class Shape extends EventEmitter {
     >;
     public compareHash(hashedPassword: string, password: string): Promise<boolean>
 
-    
+
 }
 
 export = Shape

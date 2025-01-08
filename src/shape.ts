@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, UpdateWriteOpResult } from "mongoose";
+import { Document, Model, UpdateWriteOpResult } from "mongoose";
 import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "./interfaces/ShapeFunctions";
 import { DBError } from "./utils/Error";
 import { createNestedObject } from "./utils/NestedObject";
@@ -35,7 +35,7 @@ class Shape extends EventEmitter {
                 throw new Error(ErrorData.message)
             }
             console.log(key, value);
-            
+
             return await this.model.findOne({ [key]: value })
         }
 
@@ -67,12 +67,12 @@ class Shape extends EventEmitter {
         | null
     > {
         const { key, value } = filter;
-       
+
         if (!key || !value || typeof key !== "string") {
             const ErrorData = new DBError('Invalid param was provided "filter"');
             throw new Error(ErrorData.message);
         }
-        var Nfilter = {[key as string]: value}
+        var Nfilter = { [key as string]: value }
 
         try {
 
@@ -81,9 +81,9 @@ class Shape extends EventEmitter {
                 if ("key" in update && "value" in update) {
                     const Ukey = update.key as string;
                     const arrOfD = Ukey.split(".");
-                    console.log(this.extentions?.autoHash?.enable, await autoHash(this?.extentions, [{[update.key as string]: update.value}]));
-                    
-                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{[update.key as string]: update.value}]) : [{[update.key as string]: update.value}]
+                    console.log(this.extentions?.autoHash?.enable, await autoHash(this?.extentions, [{ [update.key as string]: update.value }]));
+
+                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{ [update.key as string]: update.value }]) : [{ [update.key as string]: update.value }]
                     const QueryData = await createNestedObject(
                         arrOfD,
                         val[0][update.key as string],
@@ -91,17 +91,17 @@ class Shape extends EventEmitter {
                     );
 
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false, strict: false };
-                    console.log(UpdateOption,QueryData,"asd" );
-                    
+                    console.log(UpdateOption, QueryData, "asd");
+
                     const foau = await this.model.findOneAndUpdate(Nfilter, QueryData, UpdateOption);
-                    this.emit("dbEdited", {data:foau, type: TOSU.one});
+                    this.emit("dbEdited", { data: foau, type: TOSU.one });
                     return foau;
                 } else if (typeof update === "object" && !Array.isArray(update)) {
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false, strict: false };
                     const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [update]) : [update]
-                    console.log(UpdateOption,val,'asdي' );
+                    console.log(UpdateOption, val, 'asdي');
                     const foau = await this.model.findOneAndUpdate(Nfilter, val[0], UpdateOption);
-                    this.emit("dbEdited", {data:foau, type: TOSU.one});
+                    this.emit("dbEdited", { data: foau, type: TOSU.one });
                     return foau;
                 } else {
                     const ErrorData = new DBError('Invalid param was provided "update"');
@@ -111,19 +111,19 @@ class Shape extends EventEmitter {
                 if ("key" in update && "value" in update) {
                     const Ukey = update.key as string;
                     const arrOfD = Ukey.split(".");
-                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{[update.key as string]: update.value}]) : [{[update.key as string]: update.value}]
+                    const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{ [update.key as string]: update.value }]) : [{ [update.key as string]: update.value }]
                     const QueryData = createNestedObject(
                         arrOfD,
                         val[0][update.key as string],
                         options?.arrayMethod ? options.arrayMethod : undefined
                     );
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false, strict: false };
-                    this.emit("dbEdited", {type: TOSU.all});
+                    this.emit("dbEdited", { type: TOSU.all });
                     return await this.model.updateMany(filter, QueryData, UpdateOption); // updateMany result is handled
                 } else if (typeof update === "object" && !Array.isArray(update)) {
                     const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [update]) : [update]
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false, strict: false };
-                    this.emit("dbEdited", {type: TOSU.all});
+                    this.emit("dbEdited", { type: TOSU.all });
                     return await this.model.updateMany(filter, val[0], UpdateOption); // updateMany result is handled
                 } else {
                     const ErrorData = new DBError('Invalid param was provided "update"');

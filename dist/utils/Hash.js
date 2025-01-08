@@ -29,7 +29,8 @@ const autoHash = (DatabaseOptions, data) => __awaiter(void 0, void 0, void 0, fu
             const hashedPassword = data.map((m) => __awaiter(void 0, void 0, void 0, function* () {
                 var _a;
                 console.log(m, "cluded");
-                if ((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.words.includes(m)) {
+                const ObjectK = Object.keys(m)[0];
+                if ((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.words.includes(ObjectK)) {
                     console.log(m, "mincluded");
                     return yield bcrypt_1.default.hash(m, 10);
                 }

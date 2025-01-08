@@ -6,4 +6,4 @@ interface ShapeAdd {
 
 
 
-export {ShapeAdd}
+export { ShapeAdd }

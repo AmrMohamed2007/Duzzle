@@ -1,152 +1,104 @@
-import express, { Application, Request, Response, NextFunction, RequestHandler, Router } from "express";
+import express, { Application, Request, Response, RequestHandler, Router } from "express";
+import helmet from "helmet";
+import cors from "cors";
 import { rateLimit } from "express-rate-limit";
-import Helmet from "helmet";
-import { App } from "./index"
+import { App } from "./index";
 import { connectDb } from "./server/main";
+import { EventEmitter } from 'events';
 import { DatabaseOptions } from "./interfaces/Database";
+import { ServerOptions } from "./interfaces/serve";
 
-type RouteHandler = {
-    run: (req: Request, res: Response) => void;
-};
+type RouteHandler = { run: (req: Request, res: Response) => void };
 
-export class Server {
-    public env: any;
-    public connection: App | undefined | any;
-    private limiter;
+export class Server extends EventEmitter {
+    public env: { PORT: number; APP: Application };
+    public connection: App | undefined;
+    private limiter: RequestHandler;
 
     constructor(port: number) {
-        this.env = {
-            PORT: port,
-            APP: express()
-        }
-
+        super();
+        this.env = { PORT: port, APP: express() };
         this.connection = undefined;
-
-        this.limiter = rateLimit({
-            windowMs: 15 * 60 * 1000,
-            limit: 100,
-            standardHeaders: 'draft-8',
-            legacyHeaders: false,
-        })
+        this.limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });
     }
 
-
-    connectDb(URL: string, extentions?: DatabaseOptions): App {
-        const app = connectDb(URL, extentions ? extentions : undefined )
-        this.connection = app
-        return app
+    connectDb(URL: string, options?: DatabaseOptions): App {
+        this.connection = connectDb(URL, options);
+        return this.connection;
     }
-
-    start(options?: { enableRateLimit?: boolean, enableHelmet?: boolean }): Promise<void> {
-        return new Promise((res, rej) => {
+    async start(options: {
+        enableRateLimit?: boolean; enableHelmet?: boolean; cors?: ServerOptions
+    } = {
+            enableRateLimit: false, enableHelmet: false, cors: {
+                enable: false,
+                origin: "*",
+                methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                jsonLimit: "512kb",
+                maxAge: 3600,
+                urlencoded: "512kb",
+            }
+        }): Promise<void> {
+        return new Promise((resolve, reject) => {
             this.env.APP.listen(this.env.PORT, () => {
-                if (options && options.enableRateLimit) {
-                    this.env.APP.use(this.limiter)
-                }
-                if (options && options.enableHelmet) {
-                    this.env.APP.use(Helmet({
-                        contentSecurityPolicy: {
-                            directives: {
-                                defaultSrc: ["'self'"],
-                                scriptSrc: ["'self'", "'trusted-scripts.example.com'"],
-                                objectSrc: ["'none'"],
-                                upgradeInsecureRequests: [],
-                            },
-                        },
-                        frameguard: {
-                            action: 'deny',
-                        },
-                        referrerPolicy: {
-                            policy: 'no-referrer',
-                        },
-                        hsts: {
-                            maxAge: 31536000,
-                            includeSubDomains: true,
-                            preload: true,
-                        },
-                        xssFilter: true,
-                        noSniff: true,
-                        dnsPrefetchControl: {
-                            allow: false,
-                        },
-                        hidePoweredBy: true,
-                    }));
-
-                    this.env.APP.use(Helmet());
-                    this.env.APP.use(Helmet.contentSecurityPolicy({
-                        directives: {
-                            defaultSrc: ["'self'"],
-                            scriptSrc: ["'self'", "'trusted-scripts.example.com'"],
-                            objectSrc: ["'none'"],
-                            upgradeInsecureRequests: [],
-                        },
-                    }));
-                    this.env.APP.use(Helmet.frameguard({ action: 'deny' }));
-                    this.env.APP.use(Helmet.referrerPolicy({ policy: 'same-origin' }));
-                    this.env.APP.use(Helmet.hsts({
-                        maxAge: 31536000,
-                        includeSubDomains: true,
-                        preload: true,
-                    }));
-                    this.env.APP.use(Helmet.xssFilter());
-                    this.env.APP.use(Helmet.noSniff());
-                    this.env.APP.use(Helmet.dnsPrefetchControl({ allow: false }));
-                    this.env.APP.use(Helmet.permittedCrossDomainPolicies({ permittedPolicies: 'none' }));
-                    this.env.APP.use(Helmet.hidePoweredBy());
-                    this.env.APP.use(Helmet.ieNoOpen());
-                }
-                res();
-            }).on('error', (err: Error) => {
-                rej(err);
-            });
+                if (options.enableRateLimit) this.env.APP.use(this.limiter);
+                if (options.enableHelmet) this.env.APP.use(helmet());
+                if (options.cors?.enable) this.configureMiddleware(options.cors);
+                resolve();
+            }).on('error', reject);
         });
     }
 
-    use(middleware: RequestHandler) {
+    private configureMiddleware(corsOptions: ServerOptions) {
+        console.log(corsOptions);
+        this.env.APP.use(cors({
+            origin: corsOptions.origin || "*",
+            methods: corsOptions.methods || "*",
+            allowedHeaders: corsOptions.allowedHeaders || ["Content-Type", "Authorization", "X-Requested-With", "X-HTTP-Method-Override", "X-Forwarded-For", "X-Real-IP", "X-Forwarded-Proto", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-For", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-Proto", "X-Real-IP", "X-Requested-With", "Accept", "Origin", "X-HTTP-Method-Override"],
+            exposedHeaders: corsOptions.allowedHeaders || ["Content-Type", "Authorization", "X-Requested-With", "X-HTTP-Method-Override", "X-Forwarded-For", "X-Real-IP", "X-Forwarded-Proto", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-For", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-Proto", "X-Real-IP", "X-Requested-With", "Accept", "Origin", "X-HTTP-Method-Override"],
+            maxAge: 3600,
+        }));
+        this.env.APP.use(express.json({ limit: corsOptions.jsonLimit || "512kb" }));
+        this.env.APP.use(express.urlencoded({ extended: true, limit: corsOptions.urlencoded || "512kb" }));
+    }
+
+    private handleRoute(method: keyof Application, path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        if (!handler.run) throw new SyntaxError("Handler must implement a 'run' method");
+        this.env.APP[method](path, [...middlewares, handler.run]);
+    }
+
+    public use(middleware: RequestHandler): Application {
         return this.env.APP.use(middleware);
     }
 
-    all(path: string, middlewares: RequestHandler[], handler: RouteHandler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.all(path, middlewares, handler.run) : this.env.APP.all(path, handler.run);
+    public all(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        this.handleRoute('all', path, middlewares, handler);
     }
 
-    get(path: string, middlewares: RequestHandler[], handler: RouteHandler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.get(path, middlewares, handler.run) : this.env.APP.get(path, handler.run);
+    public get(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        this.handleRoute('get', path, middlewares, handler);
     }
 
-    put(path: string, middlewares: RequestHandler[], handler: RouteHandler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.put(path, middlewares, handler.run) : this.env.APP.put(path, handler.run);
+    public put(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        this.handleRoute('put', path, middlewares, handler);
     }
 
-    delete(path: string, middlewares: RequestHandler[], handler: RouteHandler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.delete(path, middlewares, handler.run) : this.env.APP.delete(path, handler.run);
+    public delete(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        this.handleRoute('delete', path, middlewares, handler);
     }
 
-    post(path: string, middlewares: RequestHandler[], handler: RouteHandler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.post(path, middlewares, handler.run) : this.env.APP.post(path, handler.run);
+    public post(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        this.handleRoute('post', path, middlewares, handler);
     }
 
-    patch(path: string, middlewares: RequestHandler[], handler: RouteHandler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.patch(path, middlewares, handler.run) : this.env.APP.patch(path, handler.run);
+    public patch(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
+        this.handleRoute('patch', path, middlewares, handler);
     }
 
-    router(): Router {
-        return express.Router()
+    public Router(): Router {
+        return express.Router();
     }
 
-    useRouter(path: string, router: Router) {
+    public useRouter(path: string, router: Router): void {
         this.env.APP.use(path, router);
     }
 }

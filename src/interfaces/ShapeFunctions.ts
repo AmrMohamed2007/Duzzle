@@ -40,7 +40,7 @@ enum TOSN {
 }
 
 export {
-    Query, 
+    Query,
     QueryU,
     QueryUpdate,
     Uptions,

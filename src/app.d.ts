@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events';
-import {Model, Mongoose} from "mongoose"
-import {ShapeAdd} from "./interfaces/Shape"
-import {Shape} from "./shape"
+import { Mongoose } from "mongoose"
+import { ShapeAdd } from "./interfaces/Shape"
+import { Shape } from "./shape"
 import { DatabaseOptions } from './interfaces/Database';
 export class App extends EventEmitter {
-    constructor (url: string, extentions: DatabaseOptions);
+    constructor(url: string, extentions: DatabaseOptions);
     public url: string;
     public connected: boolean;
     public db: Mongoose | undefined;

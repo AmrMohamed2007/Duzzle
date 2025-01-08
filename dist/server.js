@@ -1,129 +1,97 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Server = void 0;
 const express_1 = __importDefault(require("express"));
-const express_rate_limit_1 = require("express-rate-limit");
 const helmet_1 = __importDefault(require("helmet"));
+const cors_1 = __importDefault(require("cors"));
+const express_rate_limit_1 = require("express-rate-limit");
 const main_1 = require("./server/main");
 class Server {
     constructor(port) {
-        this.env = {
-            PORT: port,
-            APP: (0, express_1.default)()
-        };
+        this.env = { PORT: port, APP: (0, express_1.default)() };
         this.connection = undefined;
-        this.limiter = (0, express_rate_limit_1.rateLimit)({
-            windowMs: 15 * 60 * 1000,
-            limit: 100,
-            standardHeaders: 'draft-8',
-            legacyHeaders: false,
-        });
+        this.limiter = (0, express_rate_limit_1.rateLimit)({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });
     }
-    connectDb(URL, extentions) {
-        const app = (0, main_1.connectDb)(URL, extentions ? extentions : undefined);
-        this.connection = app;
-        return app;
+    connectDb(URL, options) {
+        this.connection = (0, main_1.connectDb)(URL, options);
+        return this.connection;
     }
-    start(options) {
-        return new Promise((res, rej) => {
-            this.env.APP.listen(this.env.PORT, () => {
-                if (options && options.enableRateLimit) {
-                    this.env.APP.use(this.limiter);
-                }
-                if (options && options.enableHelmet) {
-                    this.env.APP.use((0, helmet_1.default)({
-                        contentSecurityPolicy: {
-                            directives: {
-                                defaultSrc: ["'self'"],
-                                scriptSrc: ["'self'", "'trusted-scripts.example.com'"],
-                                objectSrc: ["'none'"],
-                                upgradeInsecureRequests: [],
-                            },
-                        },
-                        frameguard: {
-                            action: 'deny',
-                        },
-                        referrerPolicy: {
-                            policy: 'no-referrer',
-                        },
-                        hsts: {
-                            maxAge: 31536000,
-                            includeSubDomains: true,
-                            preload: true,
-                        },
-                        xssFilter: true,
-                        noSniff: true,
-                        dnsPrefetchControl: {
-                            allow: false,
-                        },
-                        hidePoweredBy: true,
-                    }));
-                    this.env.APP.use((0, helmet_1.default)());
-                    this.env.APP.use(helmet_1.default.contentSecurityPolicy({
-                        directives: {
-                            defaultSrc: ["'self'"],
-                            scriptSrc: ["'self'", "'trusted-scripts.example.com'"],
-                            objectSrc: ["'none'"],
-                            upgradeInsecureRequests: [],
-                        },
-                    }));
-                    this.env.APP.use(helmet_1.default.frameguard({ action: 'deny' }));
-                    this.env.APP.use(helmet_1.default.referrerPolicy({ policy: 'same-origin' }));
-                    this.env.APP.use(helmet_1.default.hsts({
-                        maxAge: 31536000,
-                        includeSubDomains: true,
-                        preload: true,
-                    }));
-                    this.env.APP.use(helmet_1.default.xssFilter());
-                    this.env.APP.use(helmet_1.default.noSniff());
-                    this.env.APP.use(helmet_1.default.dnsPrefetchControl({ allow: false }));
-                    this.env.APP.use(helmet_1.default.permittedCrossDomainPolicies({ permittedPolicies: 'none' }));
-                    this.env.APP.use(helmet_1.default.hidePoweredBy());
-                    this.env.APP.use(helmet_1.default.ieNoOpen());
-                }
-                res();
-            }).on('error', (err) => {
-                rej(err);
+    start() {
+        return __awaiter(this, arguments, void 0, function* (options = {
+            enableRateLimit: false, enableHelmet: false, cors: {
+                enable: false,
+                origin: "*",
+                methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+                jsonLimit: "512kb",
+                maxAge: 3600,
+                urlencoded: "512kb",
+            }
+        }) {
+            return new Promise((resolve, reject) => {
+                this.env.APP.listen(this.env.PORT, () => {
+                    var _a;
+                    if (options.enableRateLimit)
+                        this.env.APP.use(this.limiter);
+                    if (options.enableHelmet)
+                        this.env.APP.use((0, helmet_1.default)());
+                    if ((_a = options.cors) === null || _a === void 0 ? void 0 : _a.enable)
+                        this.configureMiddleware(options.cors);
+                    resolve();
+                }).on('error', reject);
             });
         });
+    }
+    configureMiddleware(corsOptions) {
+        console.log(corsOptions);
+        this.env.APP.use((0, cors_1.default)({
+            origin: corsOptions.origin || "*",
+            methods: corsOptions.methods || "*",
+            allowedHeaders: corsOptions.allowedHeaders || ["Content-Type", "Authorization", "X-Requested-With", "X-HTTP-Method-Override", "X-Forwarded-For", "X-Real-IP", "X-Forwarded-Proto", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-For", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-Proto", "X-Real-IP", "X-Requested-With", "Accept", "Origin", "X-HTTP-Method-Override"],
+            exposedHeaders: corsOptions.allowedHeaders || ["Content-Type", "Authorization", "X-Requested-With", "X-HTTP-Method-Override", "X-Forwarded-For", "X-Real-IP", "X-Forwarded-Proto", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-For", "X-Forwarded-Host", "X-Forwarded-Port", "X-Forwarded-Server", "X-Forwarded-Proto", "X-Real-IP", "X-Requested-With", "Accept", "Origin", "X-HTTP-Method-Override"],
+            maxAge: 3600,
+        }));
+        this.env.APP.use(express_1.default.json({ limit: corsOptions.jsonLimit || "512kb" }));
+        this.env.APP.use(express_1.default.urlencoded({ extended: true, limit: corsOptions.urlencoded || "512kb" }));
+    }
+    handleRoute(method, path, middlewares, handler) {
+        if (!handler.run)
+            throw new SyntaxError("Handler must implement a 'run' method");
+        this.env.APP[method](path, [...middlewares, handler.run]);
     }
     use(middleware) {
         return this.env.APP.use(middleware);
     }
     all(path, middlewares, handler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.all(path, middlewares, handler.run) : this.env.APP.all(path, handler.run);
+        this.handleRoute('all', path, middlewares, handler);
     }
     get(path, middlewares, handler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.get(path, middlewares, handler.run) : this.env.APP.get(path, handler.run);
+        this.handleRoute('get', path, middlewares, handler);
     }
     put(path, middlewares, handler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.put(path, middlewares, handler.run) : this.env.APP.put(path, handler.run);
+        this.handleRoute('put', path, middlewares, handler);
     }
     delete(path, middlewares, handler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.delete(path, middlewares, handler.run) : this.env.APP.delete(path, handler.run);
+        this.handleRoute('delete', path, middlewares, handler);
     }
     post(path, middlewares, handler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.post(path, middlewares, handler.run) : this.env.APP.post(path, handler.run);
+        this.handleRoute('post', path, middlewares, handler);
     }
     patch(path, middlewares, handler) {
-        if (!handler.run)
-            throw SyntaxError("run is required in handler");
-        return Array.isArray(middlewares) && middlewares.length > 0 ? this.env.APP.patch(path, middlewares, handler.run) : this.env.APP.patch(path, handler.run);
+        this.handleRoute('patch', path, middlewares, handler);
     }
-    router() {
+    Router() {
         return express_1.default.Router();
     }
     useRouter(path, router) {

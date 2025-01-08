@@ -25,7 +25,7 @@ export class App extends EventEmitter {
     public extentions?: DatabaseOptions
 
     private RunNotes(): void {
-        console.log(color("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306")); 
+        console.log(color("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306"));
     }
 
     public async connect(): Promise<void | mongoose.Mongoose> {
@@ -61,7 +61,7 @@ export class App extends EventEmitter {
             throw new Error(ErrorData.message);
         }
 
-        if(!this.connected) {
+        if (!this.connected) {
             const ErrorData = new DBError("db is not connected to make a shape");
             throw new Error(ErrorData.message);
         }
