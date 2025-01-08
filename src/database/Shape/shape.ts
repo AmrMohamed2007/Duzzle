@@ -1,10 +1,10 @@
 import { Document, Model, UpdateWriteOpResult } from "mongoose";
-import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "./interfaces/ShapeFunctions";
-import { DBError } from "./utils/Error";
-import { createNestedObject } from "./utils/NestedObject";
+import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "../../interfaces/ShapeFunctions";
+import { DBError } from "../../utils/Error";
+import { createNestedObject } from "../../utils/NestedObject";
 import { EventEmitter } from "events";
-import { DatabaseOptions } from "./interfaces/Database";
-import { autoHash, compareHash } from "./utils/Hash";
+import { DatabaseOptions } from "../../interfaces/Database";
+import { autoHash, compareHash } from "../../utils/Hash";
 
 export class Shape extends EventEmitter {
     constructor(name: string, ModelData: Model<any>, extentions?: DatabaseOptions) {

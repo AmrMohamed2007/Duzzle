@@ -1,6 +1,6 @@
-import { App } from "./app";
-import { Shape } from "./shape";
-import { Server } from "./server"
+import { App } from "./database/app";
+import { Shape } from "./database/Shape/shape";
+import { Server } from "./http/server"
 
 export { Shape, App, Server };
 

@@ -1,7 +1,7 @@
 import { Document, Model, UpdateWriteOpResult } from "mongoose";
 
 import { EventEmitter } from 'events';
-import { Query, QueryU, QueryUpdate, TOSU, Uptions } from "./interfaces/ShapeFunctions";
+import { Query, QueryU, QueryUpdate, TOSU, Uptions } from "../interfaces/ShapeFunctions";
 
 
 declare module "duzzle" {

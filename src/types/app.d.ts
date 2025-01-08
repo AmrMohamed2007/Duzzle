@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import { Mongoose } from "mongoose"
-import { ShapeAdd } from "./interfaces/Shape"
+import { ShapeAdd } from "../interfaces/Shape"
 import { Shape } from "./shape"
-import { DatabaseOptions } from './interfaces/Database';
+import { DatabaseOptions } from '../interfaces/Database';
 
 declare module "duzzle" {
 

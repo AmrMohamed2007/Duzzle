@@ -1,12 +1,12 @@
 import { EventEmitter } from 'events';
-import { connect } from './app/connect';
+import { connect } from '../app/connect';
 import mongoose, { Model } from "mongoose"
-import { DBError } from './utils/Error';
-import { ShapeAdd } from './interfaces/Shape';
-import { createSch } from './app/Schema/create';
-import { Shape } from './shape';
-import { color } from './utils/Colors';
-import { DatabaseOptions } from './interfaces/Database';
+import { DBError } from '../utils/Error';
+import { ShapeAdd } from '../interfaces/Shape';
+import { createSch } from '../app/Schema/create';
+import { Shape } from './Shape/shape';
+import { color } from '../utils/Colors';
+import { DatabaseOptions } from '../interfaces/Database';
 
 export class App extends EventEmitter {
     constructor(url: string, extentions?: DatabaseOptions) {
