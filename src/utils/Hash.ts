@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt"
 import { DBError } from "./Error"
-import { DatabaseOptions } from "src/interfaces/Database"
+import { DatabaseOptions } from "../interfaces/Database"
 
 export const autoHash = async (DatabaseOptions: DatabaseOptions | undefined, data: any[]): Promise<any[] | undefined> => {
     if (!DatabaseOptions) return;
