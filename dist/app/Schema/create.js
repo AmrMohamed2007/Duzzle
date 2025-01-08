@@ -46,6 +46,18 @@ exports.createSch = createSch;
 const mongoose_1 = __importStar(require("mongoose"));
 const Error_1 = require("../../utils/Error");
 const Success_1 = require("../../utils/Success");
+/**
+ * @fileoverview This file contains the function to create a schema in the database.
+ */
+/**
+ * Creates a schema in the database with the given name and data.
+ *
+ * @param {Object} params - The parameters for creating the schema.
+ * @param {string} params.name - The name of the schema.
+ * @param {Record<string, unknown>} params.data - The data for the schema.
+ * @returns {Promise<Model<any>>} - A promise that resolves to the created schema model.
+ * @throws {Error} - Throws an error if the name is not a string or if there is an error during schema creation.
+ */
 function createSch(_a) {
     return __awaiter(this, arguments, void 0, function* ({ name, data }) {
         try {

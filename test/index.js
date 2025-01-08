@@ -10,7 +10,7 @@ app.start({
         enable: true,
         origin: "http://localhost:3000",
         methods: ["GET", "POST", "PUT", "DELETE"],
-        jsonLimit: "500mb",       
+        jsonLimit: "500kb",       
         urlencoded: "500mb",
         allowdHeaders: ["Content-Type"], 
     }
@@ -32,12 +32,12 @@ async function test() {
             dash: String,
             password: String
         }
-    })
-
-
+    }) 
+    
 
     
 
+    
     const s = await UserShape.editWI({ key: "name", value: "Yousef" }, { key: "password", value: "asdadasdads" }, 1)
 
     console.log(s);

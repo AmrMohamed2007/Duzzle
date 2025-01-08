@@ -16,6 +16,13 @@ exports.connect = connect;
 const mongoose_1 = __importDefault(require("mongoose"));
 const Error_1 = require("../utils/Error");
 const Success_1 = require("../utils/Success");
+/**
+ * Connects to the MongoDB database using the provided URL.
+ *
+ * @param url - The connection string for the MongoDB database.
+ * @returns A promise that resolves to the Mongoose instance.
+ * @throws An error if the connection fails, with the error message wrapped in a DBError.
+ */
 function connect(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

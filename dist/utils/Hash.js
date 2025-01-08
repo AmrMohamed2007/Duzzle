@@ -27,7 +27,6 @@ const autoHash = (DatabaseOptions, data) => __awaiter(void 0, void 0, void 0, fu
             const hashedPassword = data.map((m) => __awaiter(void 0, void 0, void 0, function* () {
                 var _a;
                 const ObjectK = Object.entries(m)[0];
-                console.log(ObjectK);
                 if ((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.words.includes(ObjectK[0])) {
                     const value = ObjectK[1];
                     if (typeof value !== "string" && !Buffer.isBuffer(value)) {

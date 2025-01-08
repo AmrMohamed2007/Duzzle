@@ -1,3 +1,15 @@
+import express, { Application, Request, Response, RequestHandler, Router } from "express";
+import helmet from "helmet";
+import cors from "cors";
+import { rateLimit } from "express-rate-limit";
+import { App } from "../index";
+import { connectDb } from "../server/main";
+import { EventEmitter } from 'events';
+import { DatabaseOptions } from "../interfaces/Database";
+import { ServerOptions } from "../interfaces/serve";
+
+type RouteHandler = { run: (req: Request, res: Response) => void };
+
 /**
  * Represents the server class which extends EventEmitter.
  */
@@ -67,7 +79,10 @@ export class Server extends EventEmitter {
     }
 
     /**
-        // console.log(corsOptions);
+     * Configures middleware for CORS and request body parsing.
+     * @param corsOptions - The CORS configuration options.
+     */
+    private configureMiddleware(corsOptions: ServerOptions) {
         this.env.APP.use(cors({
             origin: corsOptions.origin || "*",
             methods: corsOptions.methods || "*",
@@ -79,44 +94,102 @@ export class Server extends EventEmitter {
         this.env.APP.use(express.urlencoded({ extended: true, limit: corsOptions.urlencoded || "36kb" }));
     }
 
+    /**
+     * Handles the routing for the specified HTTP method and path.
+     * @param method - The HTTP method (get, post, put, delete, patch, all).
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     private handleRoute(method: keyof Application, path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         if (!handler.run) throw new SyntaxError("Handler must implement a 'run' method");
         this.env.APP[method](path, [...middlewares, handler.run]);
     }
 
+    /**
+     * Uses the specified middleware in the application.
+     * @param middleware - The middleware function.
+     * @returns The Express application instance.
+     */
     public use(middleware: RequestHandler): Application {
         return this.env.APP.use(middleware);
     }
 
+    /**
+     * Registers a route that handles all HTTP methods.
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     public all(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         this.handleRoute('all', path, middlewares, handler);
     }
 
+    /**
+     * Registers a route that handles GET requests.
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     public get(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         this.handleRoute('get', path, middlewares, handler);
     }
 
+    /**
+     * Registers a route that handles PUT requests.
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     public put(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         this.handleRoute('put', path, middlewares, handler);
     }
 
+    /**
+     * Registers a route that handles DELETE requests.
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     public delete(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         this.handleRoute('delete', path, middlewares, handler);
     }
 
+    /**
+     * Registers a route that handles POST requests.
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     public post(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         this.handleRoute('post', path, middlewares, handler);
     }
 
+    /**
+     * Registers a route that handles PATCH requests.
+     * @param path - The route path.
+     * @param middlewares - The array of middleware functions.
+     * @param handler - The route handler implementing the run method.
+     */
     public patch(path: string, middlewares: RequestHandler[], handler: RouteHandler): void {
         this.handleRoute('patch', path, middlewares, handler);
     }
 
+    /**
+     * Creates a new router instance.
+     * @returns The Express router instance.
+     */
     public Router(): Router {
         return express.Router();
     }
 
+    /**
+     * Uses the specified router for the given path.
+     * @param path - The base path for the router.
+     * @param router - The Express router instance.
+     */
     public useRouter(path: string, router: Router): void {
         this.env.APP.use(path, router);
     }
 }
+

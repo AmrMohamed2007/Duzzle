@@ -7,6 +7,13 @@ import { DatabaseOptions } from "../../interfaces/Database";
 import { autoHash, compareHash } from "../../utils/Hash";
 
 export class Shape extends EventEmitter {
+    /**
+     * Creates an instance of the Shape class, which is an EventEmitter.
+     *
+     * @param {string} name - The name of the shape.
+     * @param {Model<any>} ModelData - The Mongoose model associated with the shape.
+     * @param {DatabaseOptions} [extentions] - The options for the Mongoose connection.
+     */
     constructor(name: string, ModelData: Model<any>, extentions?: DatabaseOptions) {
         super()
         this.name = name
@@ -18,6 +25,13 @@ export class Shape extends EventEmitter {
     public name: string;
     public model: Model<any>
     public extentions?: DatabaseOptions
+    /**
+     * Searches for a document in the database based on the query options provided.
+     *
+     * @param {Query} options - The query options.
+     * @returns {Promise<Document<unknown, any, unknown> | Document<unknown, any, unknown>[] | undefined | null>} The document or documents found, or null if no documents were found.
+     * @throws {Error} If the query options are invalid.
+     */
     public async searchWI(options: Query): Promise<Document<unknown, any, unknown> | Document<unknown, any, unknown>[] | undefined | null> {
         const { type = TOSN.one, key, value } = options
         if (!type || !value) {
@@ -53,6 +67,22 @@ export class Shape extends EventEmitter {
     }
 
 
+    /**
+     * Edits documents in the database based on the filter and update instructions.
+     *
+     * @param {QueryU} filter - The query filter.
+     * @param {QueryUpdate | Record<string, unknown>} update - The update instructions.
+     * @param {TOSU} type - The type of update to perform.
+     * @param {Uptions} [options] - Options for the update.
+     * @returns {Promise<
+     *     | Document<unknown, any, unknown>
+     *     | Document<unknown, any, unknown>[]
+     *     | UpdateWriteOpResult
+     *     | undefined
+     *     | null
+     * >} The result of the update operation.
+     * @throws {Error} If the query options are invalid.
+     */
     public async editWI(
         filter: QueryU,
         update: QueryUpdate | Record<string, unknown>,

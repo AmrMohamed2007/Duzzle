@@ -1,6 +1,20 @@
 import mongoose, { Model, Schema } from "mongoose"
 import { DBError } from "../../utils/Error";
 import { DBD } from "../../utils/Success";
+/**
+ * @fileoverview This file contains the function to create a schema in the database.
+ */
+
+/**
+ * Creates a schema in the database with the given name and data.
+ *
+ * @param {Object} params - The parameters for creating the schema.
+ * @param {string} params.name - The name of the schema.
+ * @param {Record<string, unknown>} params.data - The data for the schema.
+ * @returns {Promise<Model<any>>} - A promise that resolves to the created schema model.
+ * @throws {Error} - Throws an error if the name is not a string or if there is an error during schema creation.
+ */
+
 export async function createSch({ name, data }: { name: string, data: Record<string, unknown> }): Promise<Model<any>> {
     try {
         if (typeof name !== "string") {
@@ -19,5 +33,3 @@ export async function createSch({ name, data }: { name: string, data: Record<str
     }
 
 }
-
-
