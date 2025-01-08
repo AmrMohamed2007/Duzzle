@@ -34,7 +34,6 @@ export class Shape extends EventEmitter {
                 const ErrorData = new DBError("Invaild param was provided")
                 throw new Error(ErrorData.message)
             }
-            console.log(key, value);
 
             return await this.model.findOne({ [key]: value })
         }
@@ -81,7 +80,6 @@ export class Shape extends EventEmitter {
                 if ("key" in update && "value" in update) {
                     const Ukey = update.key as string;
                     const arrOfD = Ukey.split(".");
-                    console.log(this.extentions?.autoHash?.enable, await autoHash(this?.extentions, [{ [update.key as string]: update.value }]));
 
                     const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [{ [update.key as string]: update.value }]) : [{ [update.key as string]: update.value }]
                     const QueryData = await createNestedObject(
@@ -91,7 +89,6 @@ export class Shape extends EventEmitter {
                     );
 
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false, strict: false };
-                    console.log(UpdateOption, QueryData, "asd");
 
                     const foau = await this.model.findOneAndUpdate(Nfilter, QueryData, UpdateOption);
                     this.emit("dbEdited", { data: foau, type: TOSU.one });
@@ -99,7 +96,6 @@ export class Shape extends EventEmitter {
                 } else if (typeof update === "object" && !Array.isArray(update)) {
                     const UpdateOption = { new: true, upsert: options?.createNew ? true : false, strict: false };
                     const val: any = this.extentions?.autoHash?.enable ? await autoHash(this.extentions, [update]) : [update]
-                    console.log(UpdateOption, val, 'asdي');
                     const foau = await this.model.findOneAndUpdate(Nfilter, val[0], UpdateOption);
                     this.emit("dbEdited", { data: foau, type: TOSU.one });
                     return foau;
