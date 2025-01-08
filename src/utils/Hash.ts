@@ -16,7 +16,7 @@ export const autoHash = async (DatabaseOptions: DatabaseOptions | undefined, dat
                     const value = ObjectK[1];
                     if (typeof value !== "string" && !Buffer.isBuffer(value)) {
                         throw new Error("Value to hash must be a string or Buffer");
-                    }
+                    } 
                     const hash = await bcrypt.hash(value, 10);
                     return { [ObjectK[0]]: hash };
                 }

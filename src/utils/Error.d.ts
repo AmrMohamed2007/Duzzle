@@ -3,4 +3,3 @@ declare class DBError extends Error {
     readonly message: string;
     readonly name: string;
 }
-

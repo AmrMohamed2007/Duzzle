@@ -13,6 +13,7 @@ type RouteHandler = { run: (req: Request, res: Response) => void };
 /**
  * Represents the server class which extends EventEmitter.
  */
+
 export class Server extends EventEmitter {
     /**
      * The environment configuration containing the port and the Express application instance.

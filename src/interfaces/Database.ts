@@ -4,6 +4,5 @@ export interface DatabaseOptions {
         enable: boolean,
         words: string[]
     }
-    logFile?: boolean
-}
 
+}

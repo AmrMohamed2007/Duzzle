@@ -56,7 +56,6 @@ class Server extends events_1.EventEmitter {
         });
     }
     configureMiddleware(corsOptions) {
-        console.log(corsOptions);
         this.env.APP.use((0, cors_1.default)({
             origin: corsOptions.origin || "*",
             methods: corsOptions.methods || "*",
