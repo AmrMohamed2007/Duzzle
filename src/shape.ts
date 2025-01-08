@@ -2,11 +2,11 @@ import { Document, Model, UpdateWriteOpResult } from "mongoose";
 import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "./interfaces/ShapeFunctions";
 import { DBError } from "./utils/Error";
 import { createNestedObject } from "./utils/NestedObject";
-import { EventEmitter } from "stream";
+import { EventEmitter } from "events";
 import { DatabaseOptions } from "./interfaces/Database";
 import { autoHash, compareHash } from "./utils/Hash";
 
-class Shape extends EventEmitter {
+export class Shape extends EventEmitter {
     constructor(name: string, ModelData: Model<any>, extentions?: DatabaseOptions) {
         super()
         this.name = name
@@ -156,4 +156,3 @@ class Shape extends EventEmitter {
 
 }
 
-export { Shape }

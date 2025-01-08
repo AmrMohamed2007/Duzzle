@@ -21,20 +21,21 @@ const autoHash = (DatabaseOptions, data) => __awaiter(void 0, void 0, void 0, fu
         return;
     if (((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.enable) && ((_b = DatabaseOptions.autoHash) === null || _b === void 0 ? void 0 : _b.words) && ((_c = DatabaseOptions.autoHash) === null || _c === void 0 ? void 0 : _c.words.length) > 0) {
         if (!Array.isArray(data)) {
-            const ErrorData = new Error_1.DBError("data is not array");
-            throw new Error(ErrorData.message);
+            throw new Error(new Error_1.DBError("data is not array").message);
         }
         else {
-            console.log(data, 'dataaa', DatabaseOptions, DatabaseOptions.autoHash.words);
             const hashedPassword = data.map((m) => __awaiter(void 0, void 0, void 0, function* () {
                 var _a;
-                console.log(m, "cluded");
-                const ObjectK = Object.keys(m)[0];
-                if ((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.words.includes(ObjectK)) {
-                    console.log(m, "mincluded");
-                    return yield bcrypt_1.default.hash(m, 10);
+                const ObjectK = Object.entries(m)[0];
+                console.log(ObjectK);
+                if ((_a = DatabaseOptions.autoHash) === null || _a === void 0 ? void 0 : _a.words.includes(ObjectK[0])) {
+                    const value = ObjectK[1];
+                    if (typeof value !== "string" && !Buffer.isBuffer(value)) {
+                        throw new Error("Value to hash must be a string or Buffer");
+                    }
+                    const hash = yield bcrypt_1.default.hash(value, 10);
+                    return { [ObjectK[0]]: hash };
                 }
-                console.log(m, "cludedsss");
                 return m;
             }));
             return (yield Promise.all(hashedPassword)).filter(m => m);
@@ -45,8 +46,7 @@ const autoHash = (DatabaseOptions, data) => __awaiter(void 0, void 0, void 0, fu
 exports.autoHash = autoHash;
 const compareHash = (password, hash) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield bcrypt_1.default.compare(password, hash);
-        return result;
+        return yield bcrypt_1.default.compare(password, hash);
     }
     catch (error) {
         throw new Error(error.message);

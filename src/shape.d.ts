@@ -3,7 +3,11 @@ import { Document, Model, UpdateWriteOpResult } from "mongoose";
 import { EventEmitter } from 'events';
 import { Query, QueryU, QueryUpdate, TOSU, Uptions } from "./interfaces/ShapeFunctions";
 
-declare class Shape extends EventEmitter {
+
+declare module "duzzle" {
+
+
+export class Shape extends EventEmitter {
     constructor(name: string, ModelData: Model<any>);
     public name: string;
     public model: Model<any>
@@ -24,5 +28,4 @@ declare class Shape extends EventEmitter {
 
 
 }
-
-export = Shape
+}

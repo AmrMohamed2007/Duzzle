@@ -13,9 +13,9 @@ exports.Shape = void 0;
 const ShapeFunctions_1 = require("./interfaces/ShapeFunctions");
 const Error_1 = require("./utils/Error");
 const NestedObject_1 = require("./utils/NestedObject");
-const stream_1 = require("stream");
+const events_1 = require("events");
 const Hash_1 = require("./utils/Hash");
-class Shape extends stream_1.EventEmitter {
+class Shape extends events_1.EventEmitter {
     constructor(name, ModelData, extentions) {
         super();
         this.name = name;

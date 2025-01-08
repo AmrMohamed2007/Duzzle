@@ -1,40 +1,38 @@
 import bcrypt from "bcrypt"
 import { DBError } from "./Error"
 import { DatabaseOptions } from "src/interfaces/Database"
+
 export const autoHash = async (DatabaseOptions: DatabaseOptions | undefined, data: any[]): Promise<any[] | undefined> => {
-    if(!DatabaseOptions) return;
+    if (!DatabaseOptions) return;
     if (DatabaseOptions.autoHash?.enable && DatabaseOptions.autoHash?.words && DatabaseOptions.autoHash?.words.length > 0) {
         if (!Array.isArray(data)) {
-            const ErrorData = new DBError("data is not array")
-            throw new Error(ErrorData.message)
+            throw new Error(new DBError("data is not array").message);
         } else {
-            console.log(data, 'dataaa',DatabaseOptions, DatabaseOptions.autoHash.words);
-            
             const hashedPassword = data.map(async m => {
-                console.log(m, "cluded");
-                const ObjectK = Object.keys(m)
+                const ObjectK = Object.entries(m)[0];
+             
                 
                 if (DatabaseOptions.autoHash?.words.includes(ObjectK[0])) {
-                    console.log(m, "mincluded");
-                    const hashed = {[ObjectK[0]]:await bcrypt.hash(ObjectK[1], 10)}
-                    return  hashed
+                    const value = ObjectK[1];
+                    if (typeof value !== "string" && !Buffer.isBuffer(value)) {
+                        throw new Error("Value to hash must be a string or Buffer");
+                    }
+                    const hash = await bcrypt.hash(value, 10);
+                    return { [ObjectK[0]]: hash };
                 }
-                console.log(m, "cludedsss");
                 return m;
-
-            })
-            return (await Promise.all(hashedPassword)).filter(m => m) as string[]
+            });
+            return (await Promise.all(hashedPassword)).filter(m => m) as any[];
         }
     }
-    return undefined
-
+    return undefined;
 }
 
 export const compareHash = async (password: string, hash: string): Promise<boolean> => {
     try {
-        const result = await bcrypt.compare(password, hash)
-        return result
+        return await bcrypt.compare(password, hash);
     } catch (error: any) {
-        throw new Error(error.message)
+        throw new Error(error.message);
     }
 }
+

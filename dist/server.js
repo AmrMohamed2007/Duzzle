@@ -18,8 +18,10 @@ const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
 const express_rate_limit_1 = require("express-rate-limit");
 const main_1 = require("./server/main");
-class Server {
+const events_1 = require("events");
+class Server extends events_1.EventEmitter {
     constructor(port) {
+        super();
         this.env = { PORT: port, APP: (0, express_1.default)() };
         this.connection = undefined;
         this.limiter = (0, express_rate_limit_1.rateLimit)({ windowMs: 15 * 60 * 1000, max: 100, standardHeaders: true, legacyHeaders: false });

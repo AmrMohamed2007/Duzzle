@@ -36,7 +36,9 @@ async function test() {
 
 
 
-    const s = await UserShape.editWI({ key: "name", value: "Yousef" }, { key: "password", value: "password" }, 1)
+    
+
+    const s = await UserShape.editWI({ key: "name", value: "Yousef" }, { key: "password", value: "asdadasdads" }, 1)
 
     console.log(s);
 
@@ -44,10 +46,10 @@ async function test() {
 
 }
 
-// setTimeout(() => {
-//     test()
+setTimeout(() => {
+    test()
 
-// },5000) // timeout for the db to connect you can handle it with any way else
+},5000) // timeout for the db to connect you can handle it with any way else
 
 
 
