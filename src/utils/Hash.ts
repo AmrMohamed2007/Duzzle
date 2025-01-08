@@ -12,11 +12,12 @@ export const autoHash = async (DatabaseOptions: DatabaseOptions | undefined, dat
             
             const hashedPassword = data.map(async m => {
                 console.log(m, "cluded");
-                const ObjectK = Object.keys(m)[0]
-                if (DatabaseOptions.autoHash?.words.includes(ObjectK)) {
+                const ObjectK = Object.keys(m)
+                
+                if (DatabaseOptions.autoHash?.words.includes(ObjectK[0])) {
                     console.log(m, "mincluded");
-                    
-                    return await bcrypt.hash(m, 10)
+                    const hashed = {[ObjectK[0]]:await bcrypt.hash(ObjectK[1], 10)}
+                    return  hashed
                 }
                 console.log(m, "cludedsss");
                 return m;
