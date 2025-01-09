@@ -10,18 +10,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Shape = void 0;
-const ShapeFunctions_1 = require("./interfaces/ShapeFunctions");
-const Error_1 = require("./utils/Error");
-const NestedObject_1 = require("./utils/NestedObject");
+const ShapeFunctions_1 = require("../../interfaces/ShapeFunctions");
+const Error_1 = require("../../utils/Error");
+const NestedObject_1 = require("../../utils/NestedObject");
 const events_1 = require("events");
-const Hash_1 = require("./utils/Hash");
+const Hash_1 = require("../../utils/Hash");
 class Shape extends events_1.EventEmitter {
+    /**
+     * Creates an instance of the Shape class, which is an EventEmitter.
+     *
+     * @param {string} name - The name of the shape.
+     * @param {Model<any>} ModelData - The Mongoose model associated with the shape.
+     * @param {DatabaseOptions} [extentions] - The options for the Mongoose connection.
+     */
     constructor(name, ModelData, extentions) {
         super();
         this.name = name;
         this.model = ModelData;
         this.extentions = extentions ? extentions : undefined;
     }
+    /**
+     * Searches for a document in the database based on the query options provided.
+     *
+     * @param {Query} options - The query options.
+     * @returns {Promise<Document<unknown, any, unknown> | Document<unknown, any, unknown>[] | undefined | null>} The document or documents found, or null if no documents were found.
+     * @throws {Error} If the query options are invalid.
+     */
     searchWI(options) {
         return __awaiter(this, void 0, void 0, function* () {
             const { type = ShapeFunctions_1.TOSN.one, key, value } = options;
@@ -37,7 +51,6 @@ class Shape extends events_1.EventEmitter {
                     const ErrorData = new Error_1.DBError("Invaild param was provided");
                     throw new Error(ErrorData.message);
                 }
-                console.log(key, value);
                 return yield this.model.findOne({ [key]: value });
             }
             else if (type == ShapeFunctions_1.TOSN.all) {
@@ -50,9 +63,25 @@ class Shape extends events_1.EventEmitter {
             }
         });
     }
+    /**
+     * Edits documents in the database based on the filter and update instructions.
+     *
+     * @param {QueryU} filter - The query filter.
+     * @param {QueryUpdate | Record<string, unknown>} update - The update instructions.
+     * @param {TOSU} type - The type of update to perform.
+     * @param {Uptions} [options] - Options for the update.
+     * @returns {Promise<
+     *     | Document<unknown, any, unknown>
+     *     | Document<unknown, any, unknown>[]
+     *     | UpdateWriteOpResult
+     *     | undefined
+     *     | null
+     * >} The result of the update operation.
+     * @throws {Error} If the query options are invalid.
+     */
     editWI(filter, update, type, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+            var _a, _b, _c, _d, _e, _f, _g, _h;
             const { key, value } = filter;
             if (!key || !value || typeof key !== "string") {
                 const ErrorData = new Error_1.DBError('Invalid param was provided "filter"');
@@ -64,19 +93,16 @@ class Shape extends events_1.EventEmitter {
                     if ("key" in update && "value" in update) {
                         const Ukey = update.key;
                         const arrOfD = Ukey.split(".");
-                        console.log((_b = (_a = this.extentions) === null || _a === void 0 ? void 0 : _a.autoHash) === null || _b === void 0 ? void 0 : _b.enable, yield (0, Hash_1.autoHash)(this === null || this === void 0 ? void 0 : this.extentions, [{ [update.key]: update.value }]));
-                        const val = ((_d = (_c = this.extentions) === null || _c === void 0 ? void 0 : _c.autoHash) === null || _d === void 0 ? void 0 : _d.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [{ [update.key]: update.value }]) : [{ [update.key]: update.value }];
+                        const val = ((_b = (_a = this.extentions) === null || _a === void 0 ? void 0 : _a.autoHash) === null || _b === void 0 ? void 0 : _b.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [{ [update.key]: update.value }]) : [{ [update.key]: update.value }];
                         const QueryData = yield (0, NestedObject_1.createNestedObject)(arrOfD, val[0][update.key], (options === null || options === void 0 ? void 0 : options.arrayMethod) ? options.arrayMethod : undefined);
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
-                        console.log(UpdateOption, QueryData, "asd");
                         const foau = yield this.model.findOneAndUpdate(Nfilter, QueryData, UpdateOption);
                         this.emit("dbEdited", { data: foau, type: ShapeFunctions_1.TOSU.one });
                         return foau;
                     }
                     else if (typeof update === "object" && !Array.isArray(update)) {
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
-                        const val = ((_f = (_e = this.extentions) === null || _e === void 0 ? void 0 : _e.autoHash) === null || _f === void 0 ? void 0 : _f.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [update]) : [update];
-                        console.log(UpdateOption, val, 'asdي');
+                        const val = ((_d = (_c = this.extentions) === null || _c === void 0 ? void 0 : _c.autoHash) === null || _d === void 0 ? void 0 : _d.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [update]) : [update];
                         const foau = yield this.model.findOneAndUpdate(Nfilter, val[0], UpdateOption);
                         this.emit("dbEdited", { data: foau, type: ShapeFunctions_1.TOSU.one });
                         return foau;
@@ -90,14 +116,14 @@ class Shape extends events_1.EventEmitter {
                     if ("key" in update && "value" in update) {
                         const Ukey = update.key;
                         const arrOfD = Ukey.split(".");
-                        const val = ((_h = (_g = this.extentions) === null || _g === void 0 ? void 0 : _g.autoHash) === null || _h === void 0 ? void 0 : _h.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [{ [update.key]: update.value }]) : [{ [update.key]: update.value }];
+                        const val = ((_f = (_e = this.extentions) === null || _e === void 0 ? void 0 : _e.autoHash) === null || _f === void 0 ? void 0 : _f.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [{ [update.key]: update.value }]) : [{ [update.key]: update.value }];
                         const QueryData = (0, NestedObject_1.createNestedObject)(arrOfD, val[0][update.key], (options === null || options === void 0 ? void 0 : options.arrayMethod) ? options.arrayMethod : undefined);
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
                         this.emit("dbEdited", { type: ShapeFunctions_1.TOSU.all });
                         return yield this.model.updateMany(filter, QueryData, UpdateOption); // updateMany result is handled
                     }
                     else if (typeof update === "object" && !Array.isArray(update)) {
-                        const val = ((_k = (_j = this.extentions) === null || _j === void 0 ? void 0 : _j.autoHash) === null || _k === void 0 ? void 0 : _k.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [update]) : [update];
+                        const val = ((_h = (_g = this.extentions) === null || _g === void 0 ? void 0 : _g.autoHash) === null || _h === void 0 ? void 0 : _h.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [update]) : [update];
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
                         this.emit("dbEdited", { type: ShapeFunctions_1.TOSU.all });
                         return yield this.model.updateMany(filter, val[0], UpdateOption); // updateMany result is handled

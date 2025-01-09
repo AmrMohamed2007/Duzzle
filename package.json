@@ -1,7 +1,7 @@
 {
   "name": "duzzle",
-  "version": "1.0.5",
-  "description": "Best package to manage your mongodb with case and easy",
+  "version": "2.1.9",
+  "description": "Best package to manage your mongodb and server with case and easy",
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,9 +13,17 @@
     "db",
     "dbmanager",
     "mongoose-manager",
-    "mongodb-manager"
+    "mongodb-manager",
+    "express",
+    "http",
+    "httpserver",
+    "https",
+    "httpsserver",
+    "expressserver",
+    "backend",
+    "app"
   ],
-  "author": "amr",
+  "author": "amrandblack",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.1.1",

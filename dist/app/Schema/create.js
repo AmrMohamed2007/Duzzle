@@ -67,7 +67,7 @@ function createSch(_a) {
             }
             const schema = new mongoose_1.Schema(data);
             const modelSchema = mongoose_1.default.model(name, schema);
-            new Success_1.DBD(undefined, `Schema Created With Name : ${name}`); // you can add it in log file
+            new Success_1.DBD(undefined, `Schema Created With Name : ${name}`);
             return modelSchema;
         }
         catch (error) {

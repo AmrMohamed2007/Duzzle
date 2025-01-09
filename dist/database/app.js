@@ -11,13 +11,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.App = void 0;
 const events_1 = require("events");
-const connect_1 = require("./app/connect");
+const connect_1 = require("../app/connect");
 const mongoose_1 = require("mongoose");
-const Error_1 = require("./utils/Error");
-const create_1 = require("./app/Schema/create");
-const shape_1 = require("./shape");
-const Colors_1 = require("./utils/Colors");
+const Error_1 = require("../utils/Error");
+const create_1 = require("../app/Schema/create");
+const shape_1 = require("./Shape/shape");
+const Colors_1 = require("../utils/Colors");
 class App extends events_1.EventEmitter {
+    /**
+     * Creates an instance of the App class, which is an EventEmitter.
+     *
+     * @param {string} url - The url of the MongoDB database.
+     * @param {DatabaseOptions} [extentions] - The options for the Mongoose connection.
+     */
     constructor(url, extentions) {
         super();
         this.url = url;
@@ -29,6 +35,16 @@ class App extends events_1.EventEmitter {
     RunNotes() {
         console.log((0, Colors_1.color)("This Package Maked by https://www.youtube.com/@amrmohm", "#2ef306"));
     }
+    /**
+     * Establishes a connection to the MongoDB database using Mongoose.
+     *
+     * @returns {Promise<void | mongoose.Mongoose>} A promise that resolves to the Mongoose instance if the connection is successful,
+     * or rejects with a DBError if the connection fails.
+     *
+     * @throws {DBError} If the connection to the database fails.
+     *
+     * @emits dbConnected - Emits an event when the database connection is successfully established.
+     */
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
             this.RunNotes();
@@ -51,6 +67,19 @@ class App extends events_1.EventEmitter {
         }
         return Promise.reject(new Error_1.DBError("Mongoose is not connected"));
     }
+    /**
+     * Creates a new shape in the database.
+     *
+     * @param {ShapeAdd} options - The options for creating the shape.
+     * @param {string} options.name - The name of the shape.
+     * @param {Model} options.SchemaData - The schema data for the shape.
+     *
+     * @returns {Promise<Shape>} A promise that resolves to the newly created shape.
+     *
+     * @throws {Error} If the options, schema data, or name are not provided.
+     * @throws {Error} If the name is not a string or the schema data is not an instance of Model.
+     * @throws {Error} If the database is not connected.
+     */
     createShape(options) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!options || !options.SchemaData || !options.name) {
