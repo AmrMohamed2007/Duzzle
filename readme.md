@@ -1,6 +1,6 @@
 # Duzzle Library
 
-This library provides a utility for managing MongoDB schemas and interacting with them using a clean and structured interface. It includes two core classes: `Shape` and `App`, each extending the `EventEmitter` class for event-driven programming. The package allows you to dynamically define schemas using the `createShape` function, with the schema data being directly represented by the `Shape` class.
+This library provides a utility for managing MongoDB schemas and interacting with them using a clean and structured interface. It includes two core classes: `Shape` , `App` and `Server` , each extending the `EventEmitter` class for event-driven programming. The package allows you to dynamically define schemas using the `createShape` function, with the schema data being directly represented by the `Shape` class and you can make a server app and manag it easy.
 
 ## Installation
 

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Shape = void 0;
-const ShapeFunctions_1 = require("../../interfaces/ShapeFunctions");
+const index_1 = require("index");
 const Error_1 = require("../../utils/Error");
 const NestedObject_1 = require("../../utils/NestedObject");
 const events_1 = require("events");
@@ -38,22 +38,22 @@ class Shape extends events_1.EventEmitter {
      */
     searchWI(options) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { type = ShapeFunctions_1.TOSN.one, key, value } = options;
+            const { type = index_1.TOSN.one, key, value } = options;
             if (!type || !value) {
                 const ErrorData = new Error_1.DBError("Invaild param was provided");
                 throw new Error(ErrorData.message);
             }
-            if (type == ShapeFunctions_1.TOSN.id) {
+            if (type == index_1.TOSN.id) {
                 return yield this.model.findById(value);
             }
-            else if (type == ShapeFunctions_1.TOSN.one) {
+            else if (type == index_1.TOSN.one) {
                 if (!key) {
                     const ErrorData = new Error_1.DBError("Invaild param was provided");
                     throw new Error(ErrorData.message);
                 }
                 return yield this.model.findOne({ [key]: value });
             }
-            else if (type == ShapeFunctions_1.TOSN.all) {
+            else if (type == index_1.TOSN.all) {
                 const QueryData = key && value ? { [key]: value } : {};
                 return yield this.model.find(QueryData);
             }
@@ -89,7 +89,7 @@ class Shape extends events_1.EventEmitter {
             }
             var Nfilter = { [key]: value };
             try {
-                if (type === ShapeFunctions_1.TOSU.one) {
+                if (type === index_1.TOSU.one) {
                     if ("key" in update && "value" in update) {
                         const Ukey = update.key;
                         const arrOfD = Ukey.split(".");
@@ -97,14 +97,14 @@ class Shape extends events_1.EventEmitter {
                         const QueryData = yield (0, NestedObject_1.createNestedObject)(arrOfD, val[0][update.key], (options === null || options === void 0 ? void 0 : options.arrayMethod) ? options.arrayMethod : undefined);
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
                         const foau = yield this.model.findOneAndUpdate(Nfilter, QueryData, UpdateOption);
-                        this.emit("dbEdited", { data: foau, type: ShapeFunctions_1.TOSU.one });
+                        this.emit("dbEdited", { data: foau, type: index_1.TOSU.one });
                         return foau;
                     }
                     else if (typeof update === "object" && !Array.isArray(update)) {
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
                         const val = ((_d = (_c = this.extentions) === null || _c === void 0 ? void 0 : _c.autoHash) === null || _d === void 0 ? void 0 : _d.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [update]) : [update];
                         const foau = yield this.model.findOneAndUpdate(Nfilter, val[0], UpdateOption);
-                        this.emit("dbEdited", { data: foau, type: ShapeFunctions_1.TOSU.one });
+                        this.emit("dbEdited", { data: foau, type: index_1.TOSU.one });
                         return foau;
                     }
                     else {
@@ -112,20 +112,20 @@ class Shape extends events_1.EventEmitter {
                         throw new Error(ErrorData.message);
                     }
                 }
-                else if (type === ShapeFunctions_1.TOSU.all) {
+                else if (type === index_1.TOSU.all) {
                     if ("key" in update && "value" in update) {
                         const Ukey = update.key;
                         const arrOfD = Ukey.split(".");
                         const val = ((_f = (_e = this.extentions) === null || _e === void 0 ? void 0 : _e.autoHash) === null || _f === void 0 ? void 0 : _f.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [{ [update.key]: update.value }]) : [{ [update.key]: update.value }];
                         const QueryData = (0, NestedObject_1.createNestedObject)(arrOfD, val[0][update.key], (options === null || options === void 0 ? void 0 : options.arrayMethod) ? options.arrayMethod : undefined);
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
-                        this.emit("dbEdited", { type: ShapeFunctions_1.TOSU.all });
+                        this.emit("dbEdited", { type: index_1.TOSU.all });
                         return yield this.model.updateMany(filter, QueryData, UpdateOption); // updateMany result is handled
                     }
                     else if (typeof update === "object" && !Array.isArray(update)) {
                         const val = ((_h = (_g = this.extentions) === null || _g === void 0 ? void 0 : _g.autoHash) === null || _h === void 0 ? void 0 : _h.enable) ? yield (0, Hash_1.autoHash)(this.extentions, [update]) : [update];
                         const UpdateOption = { new: true, upsert: (options === null || options === void 0 ? void 0 : options.createNew) ? true : false, strict: false };
-                        this.emit("dbEdited", { type: ShapeFunctions_1.TOSU.all });
+                        this.emit("dbEdited", { type: index_1.TOSU.all });
                         return yield this.model.updateMany(filter, val[0], UpdateOption); // updateMany result is handled
                     }
                     else {

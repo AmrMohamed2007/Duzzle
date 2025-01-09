@@ -1,8 +1,9 @@
 {
   "name": "duzzle",
-  "version": "2.1.9",
+  "version": "2.2.2",
   "description": "Best package to manage your mongodb and server with case and easy",
   "main": "dist/index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsc"

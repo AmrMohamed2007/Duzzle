@@ -15,7 +15,7 @@ const connect_1 = require("../app/connect");
 const mongoose_1 = require("mongoose");
 const Error_1 = require("../utils/Error");
 const create_1 = require("../app/Schema/create");
-const shape_1 = require("./Shape/shape");
+const index_1 = require("index");
 const Colors_1 = require("../utils/Colors");
 class App extends events_1.EventEmitter {
     /**
@@ -95,7 +95,7 @@ class App extends events_1.EventEmitter {
                 throw new Error(ErrorData.message);
             }
             const Schema = yield (0, create_1.createSch)({ name: options.name, data: options.SchemaData });
-            const newShape = new shape_1.Shape(options.name, Schema, this.extentions);
+            const newShape = new index_1.Shape(options.name, Schema, this.extentions);
             this.Shapes[options.name] = newShape;
             return newShape;
         });
