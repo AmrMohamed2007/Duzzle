@@ -6,8 +6,8 @@ const index_1 = require("../../index");
  * Connects to the database using the provided URL and optional extensions.
  *
  * @param {string} URL - The URL of the database to connect to.
- * @param {Duzzle.DatabaseOptions} [extentions] - Optional database configuration options.
- * @returns {Duzzle.App} The connected database application instance.
+ * @param {DatabaseOptions} [extentions] - Optional database configuration options.
+ * @returns {App} The connected database application instance.
  * @throws {Error} If the URL is not provided or if there is an error during connection.
  */
 const connectDb = (URL, extentions) => {

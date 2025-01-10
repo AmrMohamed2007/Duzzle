@@ -1,9 +1,9 @@
 import { Document, Model, UpdateWriteOpResult } from "mongoose";
-import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "index";
+import { Query, QueryU, QueryUpdate, TOSN, TOSU, Uptions } from "../../../index";
 import { DBError } from "../../utils/Error";
 import { createNestedObject } from "../../utils/NestedObject";
 import { EventEmitter } from "events";
-import { DatabaseOptions } from "index";
+import type {DatabaseOptions} from "../../../index"; // INDEX.D.TS
 import { autoHash, compareHash } from "../../utils/Hash";
 
 export class Shape extends EventEmitter {

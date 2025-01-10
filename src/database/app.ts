@@ -2,11 +2,11 @@ import { EventEmitter } from 'events';
 import { connect } from '../app/connect';
 import mongoose, { Model } from "mongoose"
 import { DBError } from '../utils/Error';
-import { ShapeAdd } from 'index';
+import { ShapeAdd } from '../../index';
 import { createSch } from '../app/Schema/create';
-import { Shape } from 'index';
+import { Shape } from './Shape/shape';
 import { color } from '../utils/Colors';
-import { DatabaseOptions } from 'index';
+import { DatabaseOptions } from '../../index';
 
 export class App extends EventEmitter {
     /**
@@ -110,5 +110,6 @@ export class App extends EventEmitter {
 
 
 }
+
 
 

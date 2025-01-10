@@ -1,6 +1,6 @@
 {
   "name": "duzzle",
-  "version": "2.2.2",
+  "version": "2.3.1",
   "description": "Best package to manage your mongodb and server with case and easy",
   "main": "dist/index.js",
   "types": "./index.d.ts",

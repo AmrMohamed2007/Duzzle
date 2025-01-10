@@ -2,11 +2,11 @@ import express, { Application, Request, Response, RequestHandler, Router } from 
 import helmet from "helmet";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
-import { App } from "../index";
+import { App } from "../database/app"; // index.ts
 import { connectDb } from "../server/main";
 import { EventEmitter } from 'events';
-import { DatabaseOptions } from "index";
-import { ServerOptions } from "index";
+import { DatabaseOptions } from "../../index";
+import { ServerOptions } from "../../index";
 
 type RouteHandler = { run: (req: Request, res: Response) => void };
 
@@ -193,4 +193,5 @@ export class Server extends EventEmitter {
         this.env.APP.use(path, router);
     }
 }
+
 

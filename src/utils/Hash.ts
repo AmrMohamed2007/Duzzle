@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import { DBError } from "./Error"
-import type Duzzle from "index";
-export const autoHash = async (DatabaseOptions: Duzzle.DatabaseOptions | undefined, data: any[]): Promise<any[] | undefined> => {
+import {DatabaseOptions} from "../../index";
+export const autoHash = async (DatabaseOptions: DatabaseOptions | undefined, data: any[]): Promise<any[] | undefined> => {
     if (!DatabaseOptions) return;
     if (DatabaseOptions.autoHash?.enable && DatabaseOptions.autoHash?.words && DatabaseOptions.autoHash?.words.length > 0) {
         if (!Array.isArray(data)) {

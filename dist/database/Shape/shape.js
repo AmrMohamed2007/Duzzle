@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Shape = void 0;
-const index_1 = require("index");
+const index_1 = require("../../../index");
 const Error_1 = require("../../utils/Error");
 const NestedObject_1 = require("../../utils/NestedObject");
 const events_1 = require("events");
