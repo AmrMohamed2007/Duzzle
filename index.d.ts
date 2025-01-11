@@ -1,4 +1,3 @@
-
 // Types
 export type RouteHandler = (req: Request, res: Response) => void;
 
